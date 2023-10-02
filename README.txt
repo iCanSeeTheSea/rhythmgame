@@ -1,4 +1,4 @@
---- rythmn dino run thingy ---
+--- rythmn g thingy ---
 
 - character moves across screen at a set speed
 - screen split up into 'beats' represented by coloured boxes
