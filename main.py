@@ -4,15 +4,15 @@ import pygame
 from pygame.locals import QUIT
 
 
-class Game_Manager:
+class GameManager:
     def __init__(self) -> None:
         # initialising pygame window
         pygame.init()
         self.window = pygame.display.set_mode((720, 500))
-        pygame.display.set_caption('Rythmn Game')
+        pygame.display.set_caption('Rhythm Game')
         self.clock = pygame.time.Clock()
         self.player = Player(self.window)
-        self.song = Song('pulsar.wav',False)
+        self.song = Song('pulsar.wav', False)
 
         # initialising beats, each beats default colour is slightly different
         # from those adjacent to it
@@ -23,14 +23,14 @@ class Game_Manager:
         
     def game_loop(self):
         while True:
-            self.window.fill((255,255,255))
+            self.window.fill((255, 255, 255))
             for beat in self.beats:
                 beat.draw_self()
             self.player.draw_self(6)
 
             if not self.song.playing:
-              self.song.play()
-              self.song.playing = True
+                self.song.play()
+                self.song.playing = True
           
             space_pressed = False
             keys = pygame.key.get_pressed()
@@ -112,7 +112,7 @@ class Player(Rectangle):
         self.__direction_change = True
         self.score = 0
 
-    def draw_self(self, delta_x):
+    def draw_self(self, delta_x=0):
         self._x += self.__calculate_move(delta_x)
         super().draw_self()
 
@@ -163,16 +163,17 @@ class Beat(Rectangle):
 
 
 class Song:
-  def __init__(self, source, playing):
-    self.source = source
-    self.sequence = []
-    self.playing = playing
-  def play(self):
-      ...
+    def __init__(self, source, playing):
+        self.source = source
+        self.sequence = []
+        self.playing = playing
+
+    def play(self):
+        ...
     # audio.play_file(self.source)
     # Pygame audio doesn't work on replit. Might have to convert to github
         
 
 if __name__ == '__main__':
-    game_manager = Game_Manager()
+    game_manager = GameManager()
     game_manager.game_loop()
