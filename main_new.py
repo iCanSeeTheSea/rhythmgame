@@ -8,8 +8,8 @@ class GameManager:
     def __init__(self) -> None:
         # initialising pygame window
         pygame.init()
-        self.window = pygame.display.set_mode((720, 500))
-        pygame.display.set_caption('Rythmn Game')
+        self.window = pygame.display.set_mode((810, 500))
+        pygame.display.set_caption('Rhythm Game')
         self.clock = pygame.time.Clock()
         self.player = Player(self.window)
         self.song = Song('pulsar.wav', False)
@@ -17,7 +17,7 @@ class GameManager:
 
         # initialising beats, each beats default colour is slightly different
         # from those adjacent to it
-        self.beats = [Beat(self.window, x=i * 90, colour_shift=abs((i - 4)) * 10, active=False) for i in range(8)]
+        self.beats = [Beat(self.window, x=i * 90, colour_shift=abs((i - 4)) * 10, active=False) for i in range(9)]
 
         self.__active_beat = self.beats[self.song.sequence[self.song.current_note]]
         self.__active_range = self.__active_beat.set_active()
@@ -116,8 +116,8 @@ class Rectangle:
         pygame.draw.rect(self._window, self._colour, rect)
         if isPlayer:
             # the player appears to move seamlessly from one side of the screen to the other
-            rect1 = pygame.Rect(self._x + 720, self._y, self._width, self._height)
-            rect2 = pygame.Rect(self._x - 720, self._y, self._width, self._height)
+            rect1 = pygame.Rect(self._x + self._window.get_width(), self._y, self._width, self._height)
+            rect2 = pygame.Rect(self._x - self._window.get_width(), self._y, self._width, self._height)
             pygame.draw.rect(self._window, self._colour, rect1)
             pygame.draw.rect(self._window, self._colour, rect2)
 
@@ -127,7 +127,7 @@ class Rectangle:
 
 class Player(Rectangle):
     def __init__(self, window) -> None:
-        super().__init__(window, window.get_width() // 2, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
+        super().__init__(window, 425, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
         self.__direction = "right"
         self.__direction_change = True
         self.score = Score(window)
@@ -135,10 +135,10 @@ class Player(Rectangle):
 
     def draw_self(self, delta_x):
         self._x += self.__calculate_move(delta_x)
-        if self._x > 720:
-            self._x -= 720
+        if self._x > self._window.get_width():
+            self._x -= self._window.get_width()
         elif self._x < 0:
-            self._x += 720
+            self._x += self._window.get_width()
         super().draw_self(True)
 
     def change_direction(self):
@@ -247,9 +247,9 @@ class Song:
 
         for i in range(len(self.sequence)):
             if i % 2 == 0:
-                new_sequence.append((new_sequence[i] - self.sequence[i]) % 8)
+                new_sequence.append((new_sequence[i] - self.sequence[i]) % 9)
             else:
-                new_sequence.append((new_sequence[i] + self.sequence[i]) % 8)
+                new_sequence.append((new_sequence[i] + self.sequence[i]) % 9)
 
         self.sequence = new_sequence
 
