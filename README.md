@@ -1,4 +1,4 @@
---- rythmn g thingy ---
+# rhythm game thingy
 
 - character moves across screen at a set speed
 - screen split up into 'beats' represented by coloured boxes
