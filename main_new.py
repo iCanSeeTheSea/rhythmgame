@@ -22,6 +22,7 @@ class GameManager:
 
         self.space_pressed = 0
 
+        # loading song
         self.player = Player(self.window)
         self.song = Song('pulsar.wav', False)
         pygame.mixer.init()
@@ -34,7 +35,7 @@ class GameManager:
         self.__active_range = self.__active_beat.set_active()
         self.speed = 6
 
-    def game_loop(self):
+    def game_loop(self) -> None:
         """
         The `game_loop` function is responsible for running the main game loop, updating the game state, handling player
         input, and updating the display.
@@ -95,11 +96,12 @@ class GameManager:
             # running at 60 fps
             self.clock.tick(60)
 
-    def player_in_beat(self):
+    def player_in_beat(self) -> int:
         """
         The function `player_in_beat` checks if the player's range is within the active range and returns a code based on
         the direction and position of the player.
-        :return: a code based on the player's position and direction in relation to the active range. The possible
+        :return: a code based on the player's position and direction in relation to the active range.
+        The possible
         return values are:
         - 2: perfect score
         - 1: partial score
@@ -130,16 +132,22 @@ class GameManager:
 
 
 class Rectangle:
-    def __init__(self, window, x, y, height, width, colour) -> None:
+    def __init__(self, window: pygame.Surface, x: int, y: int, height: int, width: int, colour: tuple) -> None:
         """
         The function initializes an object with window, x, y, height, width, and colour attributes.
 
-        :param window: The "window" parameter represents the pygame surface on which the object will be drawn.
-        :param x: The x parameter represents the x-coordinate of the top left corner of the object
-        :param y: The parameter "y" represents the y-coordinate of the top left corner of the object
-        :param height: The "height" parameter represents the height (in pixels) of the object .
-        :param width: The "width" parameter represents the width (in pixels) of the object.
-        :param colour: The "colour" parameter represents the color of the object (Red, Green, Blue).
+        :param window: the pygame surface on which the object will be drawn.
+        :type window: pygame Surface
+        :param x: the x-coordinate of the top left corner of the object
+        :type x: int
+        :param y: the y-coordinate of the top left corner of the object
+        :type y: int
+        :param height: the height (in pixels) of the object .
+        :type height: int
+        :param width: the width (in pixels) of the object.
+        :type width: int
+        :param colour: the color of the object (Red, Green, Blue).
+        :type colour: tuple
         """
         self._window = window
         self._x = x
@@ -148,7 +156,7 @@ class Rectangle:
         self._width = width
         self._colour = colour
 
-    def draw_self(self, delta_x=0, isPlayer: bool = False):
+    def draw_self(self, delta_x: int = 0, isPlayer: bool = False) -> None:
         """
         The function draws a rectangle on a window and if the player is specified
 
@@ -156,9 +164,7 @@ class Rectangle:
         to create the illusion of seamless movement from one side to the other.
 
         :param delta_x: amount the x value of the rectangle should change by between frames
-        :param isPlayer: boolean value that indicates whether the object being drawn is the
-        player or not. If `isPlayer` is `True`, then the player object will appear to move seamlessly from one side of the
-        screen to the other, defaults to False
+        :param isPlayer: boolean value that indicates whether the object being drawn is the player or not. If `isPlayer` is `True`, then the player object will appear to move seamlessly from one side of the screen to the other, defaults to False
         :type isPlayer: bool (optional)
         """
         rect = pygame.Rect(self._x, self._y, self._width, self._height)
@@ -170,22 +176,21 @@ class Rectangle:
             pygame.draw.rect(self._window, self._colour, rect1)
             pygame.draw.rect(self._window, self._colour, rect2)
 
-    def get_range(self):
+    def get_range(self) -> tuple:
         """
         The function returns a tuple containing the minimum and maximum x values the rectangle spans.
-        :return: The method is returning a tuple containing the starting and ending values of a range. The starting value is
-        stored in the variable self._x, and the ending value is calculated by adding the width (stored in self._width) to
-        the starting value.
+        :return: a tuple containing the starting and ending values of a range. The starting value is stored in the variable self._x, and the ending value is calculated by adding the width (stored in self._width) to the starting value.
         """
         return self._x, self._x + self._width
 
 
 class Player(Rectangle):
-    def __init__(self, window) -> None:
+    def __init__(self, window: pygame.Surface) -> None:
         """
         The function initializes a rectangle object with certain attributes and creates a score object.
 
-        :param window: The "window" parameter is the pygame surface on which the player is drawn.
+        :param window: pygame surface on which the player is drawn.
+        :type window: pygame Surface
         """
         super().__init__(window, 426, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
         self.__direction = "right"
@@ -193,16 +198,15 @@ class Player(Rectangle):
         self.score = Score(window)
         self.score.update_score()
 
-    def draw_self(self, delta_x=0, isPlayer=True):
+    def draw_self(self, delta_x: int = 0, isPlayer: bool = True) -> None:
         """
         The function updates the x-coordinate of an object, ensuring it stays within the window boundaries, and then calls a
         superclass method to draw the object.
 
-        :param delta_x: The `delta_x` parameter represents the change in the x-coordinate of the object's position. It is
-        used to calculate the new x-coordinate of the object after it moves, wraps around to 0 if it goes outside the screen width
-        :param isPlayer: The `isPlayer` parameter is a boolean value that indicates whether the object being drawn is the
-        player or not. It is used to allow the player to seamlessly wrap from one side of the screen to the other, defaults to True
-        (optional)
+        :param delta_x: represents the change in the x-coordinate of the object's position. It is used to calculate the new x-coordinate of the object after it moves, wraps around to 0 if it goes outside the screen width
+        :type delta_x: int (optional)
+        :param isPlayer: boolean value that indicates whether the object being drawn is the player or not. It is used to allow the player to seamlessly wrap from one side of the screen to the other, defaults to True
+        :type isPlayer: bool (optional)
         """
         self._x += self.__calculate_move(delta_x)
         if self._x > self._window.get_width():
@@ -211,7 +215,7 @@ class Player(Rectangle):
             self._x += self._window.get_width()
         super().draw_self(isPlayer)
 
-    def change_direction(self):
+    def change_direction(self) -> None:
         """
         Changes the direction from "left" to "right" or vice versa.
         """
@@ -219,31 +223,32 @@ class Player(Rectangle):
             self.__direction_change = False
             self.__direction = (lambda direction: "right" if direction == "left" else "left")(self.__direction)
 
-    def get_direction(self):
+    def get_direction(self) -> str:
         """
         :return: The direction of the object.
         """
         return self.__direction
 
-    def disallow_direction_change(self):
+    def disallow_direction_change(self) -> None:
         """
         Sets the __direction_change attribute to False if it is currently True.
         """
         if self.__direction_change:
             self.__direction_change = False
 
-    def allow_direction_change(self):
+    def allow_direction_change(self) -> None:
         """
         Sets the __direction_change attribute to True if it is currently False.
         """
         if not self.__direction_change:
             self.__direction_change = True
 
-    def __calculate_move(self, delta_x):
+    def __calculate_move(self, delta_x: int) -> int:
         """
         The function calculates if the move should be in positive or negative x based on the direction.
 
-        :param delta_x: The parameter `delta_x` represents the amount of movement in the x-direction.
+        :param delta_x: represents the amount of movement in the x-direction.
+        :type delta_x: int
         :return: The updated value of `delta_x` is being returned.
         """
         match self.__direction:
@@ -254,23 +259,24 @@ class Player(Rectangle):
 
 
 class Beat(Rectangle):
-    def __init__(self, window, x, colour_shift, active) -> None:
+    def __init__(self, window: pygame.Surface, x: int, colour_shift: int, active: bool) -> None:
         """
         The function initializes an object with a specified window, x-coordinate, color shift, and active status.
 
-        :param window: The "window" parameter is the pygame surface on which the beat is to be drawn
-        :param x: The `x` parameter represents the x-coordinate of the object's position on the window
-        :param colour_shift: The `colour_shift` parameter is used to adjust the RGB values of the `colour` attribute. It is
-        added to each RGB value (red, green, and blue) to create a new color.
-        :param active: The "active" parameter is a boolean value that determines whether the object is currently active or
-        not. It is used to control the behavior or appearance of the object based on its active state
+        :param window: the pygame surface on which the beat is to be drawn
+        :param x: the x-coordinate of the object's position on the window
+        :type x: int
+        :param colour_shift: used to adjust the RGB values of the `colour` attribute. It is added to each RGB value (red, green, and blue) to create a new color.
+        :type colour_shift: int
+        :param active: boolean value that determines whether the object is currently active or not. It is used to control the behavior or appearance of the object based on its active state
+        :type active: bool
         """
         colour = (80 + colour_shift, 70 + colour_shift, 70 + colour_shift)
         super().__init__(window, x, 0, window.get_height(), 100, colour)
         self._default_colour = self._colour
         self._active = active
 
-    def set_active(self):
+    def set_active(self) -> tuple:
         """
         The function sets an object as active and changes its color to yellow.
         :return: The method `get_range()` is being called and its return value is returned.
@@ -279,11 +285,11 @@ class Beat(Rectangle):
         self._colour = (252, 222, 90)
         return self.get_range()
 
-    def set_hit(self, colour):
+    def set_hit(self, colour: tuple) -> None:
         """
         The function sets the active status to false and assigns a specified color to the beat.
 
-        :param colour: The "colour" parameter is the color that will be set for the object
+        :param colour: the colour that will be set for the object
         """
         if self._active:
             self._active = False
@@ -295,11 +301,12 @@ class Beat(Rectangle):
 
 
 class Score:
-    def __init__(self, window):
+    def __init__(self, window: pygame.Surface) -> None:
         """
         The function initializes the class instance with a window, font, score, and update flag.
 
-        :param window: The "window" parameter is the pygame surface where the score will be displayed
+        :param window: pygame surface where the score will be displayed
+        :type window: pygame Surface
         """
         self.__window = window
         # monospace is the best font dont @ me :3
@@ -308,7 +315,7 @@ class Score:
         self.__allow_update = True
         self.__beat_stats = {"beats": 0, "good": 0, "perfect": 0}
 
-    def __write_score(self):
+    def __write_score(self) -> None:
         """
         The function renders the score text and blits it onto the window.
         """
@@ -316,12 +323,12 @@ class Score:
         score_surface = self.__font.render(f"{self.__score}", True, (146, 99, 247))
         self.__window.blit(score_surface, (0, 0))
 
-    def __increase_score(self, beat_success):
+    def __increase_score(self, beat_success: str) -> None:
         """
         The function increases the score based on the success of a beat, but only allows the score to update once per beat.
 
-        :param beat_success: The parameter "beat_success" is a string that represents how close the player clicked to the beat. It can have
-        three possible values: "perfect", "good", or "none"
+        :param beat_success: string that represents how close the player clicked to the beat. It can have three possible values: "perfect", "good", or "none"
+        :type beat_success: str
         """
         # score can only update once per beat
         if self.__allow_update:
@@ -334,30 +341,30 @@ class Score:
                     pass
             self.__allow_update = False
 
-    def unlock_score_update(self):
+    def unlock_score_update(self) -> None:
         """
         Sets the `__allow_update` attribute of the object to `True`.
         """
         self.__allow_update = True
 
-    def update_score(self, beat_success=""):
+    def update_score(self, beat_success: str = "") -> None:
         """
-        The function updates the score by increasing it and then writes the updated score.
+        The function updates the score by increasing it and then writes the updated score to the screen.
 
-        :param beat_success: The "beat_success" parameter is a string that represents whether the beat was successful or
-        not. It is used to determine whether to increase the score or not
+        :param beat_success: string that represents whether the beat was successful or not. It is used to determine whether to increase the score or not
+        :type beat_success: str
         """
         if beat_success:
             self.__increase_score(beat_success)
             self.__update_stats(beat_success)
         self.__write_score()
 
-    def __update_stats(self, hit=""):
+    def __update_stats(self, hit: str = "") -> None:
         """
         Updates the `beat_stats` dictionary to record the number of beats, and number of good/ perfect hits
 
-        :param hit: string that represents whether the hit was "good", "perfect" or not hit. Used to determine which
-        dictionary parameters to update
+        :param hit: string that represents whether the hit was "good", "perfect" or not hit. Used to determine which dictionary parameters to update
+        :type hit: str
         """
         self.__beat_stats["beat"] += 1
         if hit and self.__beat_stats[hit]:
@@ -365,15 +372,15 @@ class Score:
 
 
 class Song:
-    def __init__(self, source, playing):
+    def __init__(self, source: str, playing: bool):
         """
         The function initializes an object with a source, a sequence of note lengths, a playing status, and a current note
         index.
 
-        :param source: The `source` parameter is used to specify the source of the music. It could be a file path to a music
-        file, a URL to a music stream, or any other valid source of music data
-        :param playing: The "playing" parameter is a boolean value that indicates whether the song is currently playing or
-        not. It is used to control the playback of the song
+        :param source: used to specify the source of the music. It could be a file path to a music file, a URL to a music stream, or any other valid source of music data
+        :type source: str
+        :param playing: boolean value that indicates whether the song is currently playing or not. It is used to control the playback of the song
+        :type playing: bool
         """
         self.source = source
         self.sequence = [  # Song sequence in note length form
@@ -407,7 +414,7 @@ class Song:
 
         self.sequence = new_sequence
 
-    def play(self):
+    def play(self) -> None:
         """
         The function loads and plays a music file using the pygame library.
         """
