@@ -99,7 +99,7 @@ class GameManager:
             pygame.display.update()
 
             # running at 60 fps
-            self.__clock.tick(60)
+            self.__clock.tick_busy_loop(60)
 
         # time at end of song where there are no beats
         # stops player from pressing space, so they don't miss the title screen
@@ -211,7 +211,7 @@ class Player(Rectangle):
         :param window: pygame surface on which the player is drawn.
         :type window: pygame Surface
         """
-        super().__init__(window, 425, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
+        super().__init__(window, 426, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
         self._direction = "right"
         self._direction_change = True
         self.score = Score(window)
