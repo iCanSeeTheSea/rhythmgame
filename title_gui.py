@@ -45,6 +45,7 @@ class GuiManager:
                 self.__background[beat].draw()
             self.__press_start.draw()
 
+            # Space bar animation
             self.__frame_counter += 1
             self.__frame_counter = self.__frame_counter % 8
             match self.__frame_counter:
@@ -57,7 +58,9 @@ class GuiManager:
                 case 6:
                     self.__space_bar._source = 'space_bar_2.png'
             self.__space_bar.draw()
-            self.__bg_colour += 0.5
+
+            # Background animation
+            self.__bg_colour += 1
             self.__bg_colour = self.__bg_colour % 360
 
             keys = pygame.key.get_pressed()
@@ -112,7 +115,7 @@ class Box:
         #     """
         #     return (angle / 180) * math.pi
 
-        # ? probably needs a comment
+        # Calculate the value of each colour channel from the angle
         red = 256 * math.cos(math.radians(angle)) + 128
         green = 256 * math.cos(math.radians(angle - 120)) + 128
         blue = 256 * math.cos(math.radians(angle - 240)) + 128
@@ -152,9 +155,6 @@ class Image:
         self._x = x
         self._y = y
 
-        # ? these should probably have a more descriptive name
-        self._xv = 0
-        self._yv = 0
         self._scale = scale
         self._window = window
 
