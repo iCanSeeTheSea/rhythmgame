@@ -443,7 +443,10 @@ class Song:
         # Calculate which beats correspond to the note lengths above
         new_sequence = [4]
 
-        # ? this probably needs a comment or two to explain how it works
+        # The sequence list is currently in the form in which each element represents
+        # a note length in multiples of 1 beat.
+        # The following code calculates, using said list, which beat numbers need to be active 
+        # in order for the player to reach the active beat in the correct amount of time.
         for i in range(len(self.__sequence)):
             if i % 2 == 0:
                 new_sequence.append((new_sequence[i] - self.__sequence[i]) % 9)
