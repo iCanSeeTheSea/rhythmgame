@@ -20,7 +20,8 @@ class GameManager:
         pygame.display.set_caption('Rhythm Game')
         self.__clock = pygame.time.Clock()
 
-        self.__space_pressed = 0
+        # starts at 2 so 'press to start' doesn't cause the first beat to be failed
+        self.__space_pressed = 2
 
         # loading song
         self.__player = Player(self._window)
