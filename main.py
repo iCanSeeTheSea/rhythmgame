@@ -2,11 +2,14 @@ import sys
 
 import pygame
 from pygame.locals import QUIT
+from pathlib import Path
 
 """
 Mintlify Doc Writer used to help write function docstrings
 https://writer.mintlify.com/
 """
+
+AUDIO_PATH = Path("./Audio")
 
 
 class GameManager:
@@ -25,7 +28,7 @@ class GameManager:
 
         # loading song
         self.__player = Player(self._window)
-        self.__song = Song('pulsar.wav', False)
+        self.__song = Song(AUDIO_PATH / 'pulsar.wav', False)
         pygame.mixer.init()
 
         # initialising beats, each beats default colour is slightly different
@@ -421,7 +424,7 @@ class Score:
 
 
 class Song:
-    def __init__(self, source: str, playing: bool):
+    def __init__(self, source: Path, playing: bool):
         """
         The function initializes an object with a source, a sequence of note lengths, a playing status, and a current note
         index.
