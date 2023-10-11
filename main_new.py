@@ -107,7 +107,7 @@ class GameManager:
         direction = self.player.get_direction()
         # 2: perfect score, 1: partial score, 0: no score, 3: player overshoot
         if direction == "right":
-            if player_range[1] + self.speed >= self.__active_range[1]:
+            if player_range[1] + self.speed >= self.__active_range[1] and player_range[1]-self.__active_range[1] <= 180:
                 return 3
             elif player_range[1] + self.speed >= self.__active_range[0]:
                 if player_range[0] + self.speed >= self.__active_range[0]:
@@ -115,7 +115,7 @@ class GameManager:
                 return 1
             return 0
         elif direction == "left":
-            if player_range[0] - self.speed <= self.__active_range[0]:
+            if player_range[0] - self.speed <= self.__active_range[0] and self.__active_range[1]-player_range[1] <= 180:
                 return 3
             elif player_range[0] - self.speed <= self.__active_range[1]:
                 if player_range[1] - self.speed <= self.__active_range[1]:
