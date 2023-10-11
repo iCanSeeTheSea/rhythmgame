@@ -421,8 +421,3 @@ class Song:
         pygame.mixer.music.load(self.source)
         pygame.mixer.music.set_volume(1)
         pygame.mixer.music.play()
-
-
-if __name__ == '__main__':
-    game_manager = GameManager()
-    game_manager.game_loop()
