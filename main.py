@@ -98,6 +98,18 @@ class GameManager:
             # running at 60 fps
             self.__clock.tick(60)
 
+        # time at end of song where there are no beats
+        # stops player from pressing space, so they don't miss the title screen
+        for _ in range(300):
+            self._window.fill((255, 255, 255))
+            for beat in self.__beats:
+                beat.set_inactive()
+                beat.draw_self()
+            self.__player.draw_self(self.__speed)
+            self.__player.score.update_score()
+            pygame.display.update()
+            self.__clock.tick(60)
+
         return self.__player.score.get_stats()
 
     def player_in_beat(self) -> int:
