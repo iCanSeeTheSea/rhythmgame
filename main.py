@@ -131,7 +131,7 @@ class GameManager:
         # 2: perfect score, 1: partial score, 0: no score, 3: player overshoot
         if direction == "right":
             player_range = [x + self.__speed for x in self.__player.get_range()]
-            if player_range[1] >= self.__active_range[1] and player_range[1]-self.__active_range[1] <= 180:
+            if player_range[1] >= self.__active_range[1] and player_range[1] - self.__active_range[1] <= 180:
                 return 3
             elif player_range[0] <= self.__active_range[0] <= player_range[1]:
                 # if the player is close enough to hitting the beat perfectly, max score is given
@@ -141,7 +141,7 @@ class GameManager:
             return 0
         elif direction == "left":
             player_range = [x - self.__speed for x in self.__player.get_range()]
-            if player_range[0] <= self.__active_range[0] and self.__active_range[1]-player_range[1] <= 180:
+            if player_range[0] <= self.__active_range[0] and self.__active_range[1] - player_range[1] <= 180:
                 return 3
             elif player_range[0] <= self.__active_range[1] <= player_range[1]:
                 if player_range[0] - self.__active_range[0] <= 30:
@@ -353,7 +353,9 @@ class Score:
         :type position: tuple
         """
         hits = self.__beat_stats["good"] + self.__beat_stats["perfect"]
-        stats_surface = self.__font.render(f"Hits:{hits}/{self.__beat_stats['beats']} Good: {self.__beat_stats['good']} Perfect: {self.__beat_stats['perfect']}", True, self.__colour)
+        stats_surface = self.__font.render(
+            f"Hits:{hits}/{self.__beat_stats['beats']} Good: {self.__beat_stats['good']} Perfect: {self.__beat_stats['perfect']}",
+            True, self.__colour)
         self.__window.blit(stats_surface, position)
 
     def write_score(self, position: tuple = (0, 0)) -> None:
@@ -436,71 +438,71 @@ class Song:
         """
         self.__source = source
         self.__sequence = [  # Song sequence in note length form
-            2,2,2,2,2,2,2,2,
-            2,2,2,2,2,2,2,2,
-            
-            2,2,2,2,1,1,1,2,1,1,1,
-            2,2,2,1,1,1,1,1,1,1,1,1,1,
-            2,2,2,2,1,1,1,2,1,1,1,
-            2,2,2,1,1,1,1,1,1,1,1,1,1,
-            2,2,2,2,1,1,1,2,1,1,1,
-            2,2,2,1,1,1,1,1,1,1,1,1,1,
+            2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2,
 
-            2,2,2,2,1,1,1,2,1,1,1,
-            2,2,2,1,1,1,1,1,1,1,1,1,1,
-            2,2,2,2,1,1,1,2,1,1,1,
-            2,2,2,1,1,1,1,1,1,1,1,1,1,
-            5,1,1,6,1,1,
-            4,4,4,5,
-            5,1,1,6,1,1,
-            4,4,4,5,
+            2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1,
+            2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1,
+            2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1,
+            2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-            2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+            2, 2, 2, 2, 2, 1, 1, 2, 1, 1, 1,
+            2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1,
+            2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            5, 1, 1, 6, 1, 1,
+            4, 4, 4, 5,
+            5, 1, 1, 6, 1, 1,
+            4, 4, 4, 5,
 
-            2,2,1,1,2,
-            2,2,1,1,2,
-            2,2,1,1,3,
-            2,2,1,1,1,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 
-            2,2,1,1,2,
-            2,2,1,1,2,
-            2,2,1,1,3,
-            2,2,1,1,1,
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 3,
+            2, 2, 1, 1, 1,
 
-            2,2,1,1,2,
-            2,2,1,1,2,
-            2,2,1,1,3,
-            2,2,1,1,1,
-            
-            2,2,1,1,2,
-            2,2,1,1,2,
-            1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 3,
+            2, 2, 1, 1, 1,
 
-            2,2,2,2,1,1,1,2,1,1,1,
-            2,2,2,1,1,1,1,1,1,1,1,1,1,
-            2,2,2,2,1,1,1,2,1,1,1,
-            2,2,2,1,1,1,1,1,1,1,1,1,1,
-            5,1,1,6,1,1,
-            4,4,4,5,
-            5,1,1,6,1,1,
-            4,4,4,1,1,1,1,1,
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 3,
+            2, 2, 1, 1, 1,
 
-            5,1,1,6,1,1,
-            4,4,4,5,
-            5,1,1,6,1,1,
-            4,4,4,5,
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 2,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
 
-            2,2,1,1,2,
-            2,2,1,1,2,
-            2,2,1,1,3,
-            2,2,1,1,1,
-            
-            2,2,1,1,2,
-            2,2,1,1,2,
-            1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,
+            2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1,
+            2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1,
+            2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            5, 1, 1, 6, 1, 1,
+            4, 4, 4, 5,
+            5, 1, 1, 6, 1, 1,
+            4, 4, 4, 1, 1, 1, 1, 1,
+
+            5, 1, 1, 6, 1, 1,
+            4, 4, 4, 5,
+            5, 1, 1, 6, 1, 1,
+            4, 4, 4, 5,
+
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 3,
+            2, 2, 1, 1, 1,
+
+            2, 2, 1, 1, 2,
+            2, 2, 1, 1, 2,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
         ]
         self.__playing = playing
         self.__current_note = -1
