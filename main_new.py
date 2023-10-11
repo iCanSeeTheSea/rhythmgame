@@ -16,76 +16,73 @@ class GameManager:
         """
         # initialising pygame window
         pygame.init()
-        self.window = pygame.display.set_mode((810, 500))
+        self._window = pygame.display.set_mode((810, 500))
         pygame.display.set_caption('Rhythm Game')
-        self.clock = pygame.time.Clock()
+        self.__clock = pygame.time.Clock()
 
-        self.space_pressed = 0
+        self.__space_pressed = 0
 
         # loading song
-        self.player = Player(self.window)
-        self.song = Song('pulsar.wav', False)
+        self.__player = Player(self._window)
+        self.__song = Song('pulsar.wav', False)
         pygame.mixer.init()
 
         # initialising beats, each beats default colour is slightly different
         # from those adjacent to it
-        self.beats = [Beat(self.window, x=i * 90, colour_shift=abs((i - 4)) * 10, active=False) for i in range(9)]
+        self.__beats = [Beat(self._window, x=i * 90, colour_shift=abs((i - 4)) * 10, active=False) for i in range(9)]
 
-        self.__active_beat = self.beats[self.song.sequence[self.song.current_note]]
+        self.__active_beat = self.__beats[self.__song.get_next_note()]
         self.__active_range = self.__active_beat.set_active()
-        self.speed = 6
+        self.__speed = 6
 
     def game_loop(self) -> None:
         """
         The `game_loop` function is responsible for running the main game loop, updating the game state, handling player
         input, and updating the display.
         """
+        self.__song.play()
         while True:
-            self.window.fill((255, 255, 255))
-            for beat in self.beats:
+            self._window.fill((255, 255, 255))
+            for beat in self.__beats:
                 beat.draw_self()
-            self.player.draw_self(self.speed)
-            self.player.score.update_score()
-
-            if not self.song.playing:
-                self.song.play()
-                self.song.playing = True
+            self.__player.draw_self(self.__speed)
+            self.__player.score.update_score()
 
             # holding space will only register as a press for the note it is first pressed for
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_SPACE] and not self.space_pressed:
-                self.space_pressed = 1
+            if keys[pygame.K_SPACE] and not self.__space_pressed:
+                self.__space_pressed = 1
             if not keys[pygame.K_SPACE]:
-                self.space_pressed = 0
+                self.__space_pressed = 0
 
             match self.player_in_beat():
                 case 0:
-                    if self.space_pressed == 1:
-                        self.space_pressed = 2
+                    if self.__space_pressed == 1:
+                        # `space_pressed` set to 2 to stop the press from registering for a different note as well
+                        self.__space_pressed = 2
                         self.__active_beat.set_hit((252, 73, 73))
-                        self.player.score.update_score("none")
+                        self.__player.score.update_score("none")
                 case 1:
-                    if self.space_pressed == 1:
-                        self.space_pressed = 2
+                    if self.__space_pressed == 1:
+                        self.__space_pressed = 2
                         self.__active_beat.set_hit((73, 252, 73))
-                        self.player.score.update_score("good")
+                        self.__player.score.update_score("good")
                 case 2:
-                    if self.space_pressed == 1:
-                        self.space_pressed = 2
+                    if self.__space_pressed == 1:
+                        self.__space_pressed = 2
                         self.__active_beat.set_hit((73, 252, 252))
-                        self.player.score.update_score("perfect")
+                        self.__player.score.update_score("perfect")
                 case 3:
                     self.__active_beat.set_hit((252, 73, 73))
-                    self.player.score.update_score("none")
-                    self.player.change_direction()
-                    self.player.allow_direction_change()
+                    self.__player.score.update_score("none")
+                    self.__player.change_direction()
+                    self.__player.allow_direction_change()
                     self.__active_beat.set_inactive()
 
                     # selecting the next active note
-                    self.song.current_note += 1
-                    self.__active_beat = self.beats[self.song.sequence[self.song.current_note]]
+                    self.__active_beat = self.__beats[self.__song.get_next_note()]
                     self.__active_range = self.__active_beat.set_active()
-                    self.player.score.unlock_score_update()
+                    self.__player.score.unlock_score_update()
 
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -94,7 +91,7 @@ class GameManager:
             pygame.display.update()
 
             # running at 60 fps
-            self.clock.tick(60)
+            self.__clock.tick(60)
 
     def player_in_beat(self) -> int:
         """
@@ -108,10 +105,10 @@ class GameManager:
         - 0: no score
         - 3: player overshoot
         """
-        direction = self.player.get_direction()
+        direction = self.__player.get_direction()
         # 2: perfect score, 1: partial score, 0: no score, 3: player overshoot
         if direction == "right":
-            player_range = [x + self.speed for x in self.player.get_range()]
+            player_range = [x + self.__speed for x in self.__player.get_range()]
             if player_range[1] >= self.__active_range[1] and player_range[1]-self.__active_range[1] <= 180:
                 return 3
             elif player_range[0] <= self.__active_range[0] <= player_range[1]:
@@ -121,7 +118,7 @@ class GameManager:
                 return 1
             return 0
         elif direction == "left":
-            player_range = [x - self.speed for x in self.player.get_range()]
+            player_range = [x - self.__speed for x in self.__player.get_range()]
             if player_range[0] <= self.__active_range[0] and self.__active_range[1]-player_range[1] <= 180:
                 return 3
             elif player_range[0] <= self.__active_range[1] <= player_range[1]:
@@ -193,8 +190,8 @@ class Player(Rectangle):
         :type window: pygame Surface
         """
         super().__init__(window, 425, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
-        self.__direction = "right"
-        self.__direction_change = True
+        self._direction = "right"
+        self._direction_change = True
         self.score = Score(window)
         self.score.update_score()
 
@@ -219,29 +216,29 @@ class Player(Rectangle):
         """
         Changes the direction from "left" to "right" or vice versa.
         """
-        if self.__direction_change:
-            self.__direction_change = False
-            self.__direction = (lambda direction: "right" if direction == "left" else "left")(self.__direction)
+        if self._direction_change:
+            self._direction_change = False
+            self._direction = (lambda direction: "right" if direction == "left" else "left")(self._direction)
 
     def get_direction(self) -> str:
         """
         :return: The direction of the object.
         """
-        return self.__direction
+        return self._direction
 
     def disallow_direction_change(self) -> None:
         """
         Sets the __direction_change attribute to False if it is currently True.
         """
-        if self.__direction_change:
-            self.__direction_change = False
+        if self._direction_change:
+            self._direction_change = False
 
     def allow_direction_change(self) -> None:
         """
         Sets the __direction_change attribute to True if it is currently False.
         """
-        if not self.__direction_change:
-            self.__direction_change = True
+        if not self._direction_change:
+            self._direction_change = True
 
     def __calculate_move(self, delta_x: int) -> int:
         """
@@ -251,7 +248,7 @@ class Player(Rectangle):
         :type delta_x: int
         :return: The updated value of `delta_x` is being returned.
         """
-        match self.__direction:
+        match self._direction:
             case "right":
                 return delta_x
             case "left":
@@ -382,8 +379,8 @@ class Song:
         :param playing: boolean value that indicates whether the song is currently playing or not. It is used to control the playback of the song
         :type playing: bool
         """
-        self.source = source
-        self.sequence = [  # Song sequence in note length form
+        self.__source = source
+        self.__sequence = [  # Song sequence in note length form
             2, 2, 2, 2, 2, 2, 2, 2,
             2, 2, 2, 2, 2, 2, 2, 2,
             2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1,
@@ -401,23 +398,34 @@ class Song:
             2, 2, 2, 2, 1, 1, 1, 2, 1, 1, 1,
             2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         ]
-        self.playing = playing
-        self.current_note = 0
+        self.__playing = playing
+        self.__current_note = -1
         # Calculate which beats correspond to the note lengths above
         new_sequence = [4]
 
-        for i in range(len(self.sequence)):
+        # ? this probably needs a comment or two to explain how it works
+        for i in range(len(self.__sequence)):
             if i % 2 == 0:
-                new_sequence.append((new_sequence[i] - self.sequence[i]) % 9)
+                new_sequence.append((new_sequence[i] - self.__sequence[i]) % 9)
             else:
-                new_sequence.append((new_sequence[i] + self.sequence[i]) % 9)
+                new_sequence.append((new_sequence[i] + self.__sequence[i]) % 9)
 
-        self.sequence = new_sequence
+        self.__sequence = new_sequence
 
     def play(self) -> None:
         """
         The function loads and plays a music file using the pygame library.
         """
-        pygame.mixer.music.load(self.source)
-        pygame.mixer.music.set_volume(1)
-        pygame.mixer.music.play()
+        if not self.__playing:
+            self.__playing = False
+            pygame.mixer.music.load(self.__source)
+            pygame.mixer.music.set_volume(1)
+            pygame.mixer.music.play()
+
+    def get_next_note(self) -> int:
+        """
+        The function increments the current note index and returns the next note in the sequence.
+        :return: The next note in the sequence.
+        """
+        self.__current_note += 1
+        return self.__sequence[self.__current_note]
