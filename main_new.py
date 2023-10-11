@@ -128,6 +128,7 @@ class GameManager:
                 return 1
             return 0
 
+
 class Rectangle:
     def __init__(self, window, x, y, height, width, colour) -> None:
         """
@@ -305,6 +306,7 @@ class Score:
         self.__font = pygame.font.SysFont("monospace", 50)
         self.__score = 0
         self.__allow_update = True
+        self.__beat_stats = {"beats": 0, "good": 0, "perfect": 0}
 
     def __write_score(self):
         """
@@ -347,7 +349,19 @@ class Score:
         """
         if beat_success:
             self.__increase_score(beat_success)
+            self.__update_stats(beat_success)
         self.__write_score()
+
+    def __update_stats(self, hit=""):
+        """
+        Updates the `beat_stats` dictionary to record the number of beats, and number of good/ perfect hits
+
+        :param hit: string that represents whether the hit was "good", "perfect" or not hit. Used to determine which
+        dictionary parameters to update
+        """
+        self.__beat_stats["beat"] += 1
+        if hit and self.__beat_stats[hit]:
+            self.__beat_stats[hit] += 1
 
 
 class Song:
