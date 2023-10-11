@@ -101,19 +101,21 @@ class Box:
         :param angle: The `angle` parameter represents an angle in degrees
         :type angle: int
         """
-        def rad(angle: int) -> float:
-            """
-            The function "rad" converts an angle in degrees to radians.
 
-            :param angle: An integer representing the angle in degrees
-            :type angle: int
-            :return: the radian equivalent of the given angle.
-            """
-            return (angle / 180) * math.pi
+        # def rad(angle: int) -> float:
+        #     """
+        #     The function "rad" converts an angle in degrees to radians.
+        #
+        #     :param angle: An integer representing the angle in degrees
+        #     :type angle: int
+        #     :return: the radian equivalent of the given angle.
+        #     """
+        #     return (angle / 180) * math.pi
 
-        red = 256 * math.cos(rad(angle)) + 128
-        green = 256 * math.cos(rad(angle - 120)) + 128
-        blue = 256 * math.cos(rad(angle - 240)) + 128
+        # ? probably needs a comment
+        red = 256 * math.cos(math.radians(angle)) + 128
+        green = 256 * math.cos(math.radians(angle - 120)) + 128
+        blue = 256 * math.cos(math.radians(angle - 240)) + 128
         if red > 255:
             red = 255
         elif red < 0:
