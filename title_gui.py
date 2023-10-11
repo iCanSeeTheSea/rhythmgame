@@ -118,16 +118,6 @@ class Box:
         :type angle: int
         """
 
-        # def rad(angle: int) -> float:
-        #     """
-        #     The function "rad" converts an angle in degrees to radians.
-        #
-        #     :param angle: An integer representing the angle in degrees
-        #     :type angle: int
-        #     :return: the radian equivalent of the given angle.
-        #     """
-        #     return (angle / 180) * math.pi
-
         # Calculate the value of each colour channel from the angle
         red = 256 * math.cos(math.radians(angle)) + 128
         green = 256 * math.cos(math.radians(angle - 120)) + 128
