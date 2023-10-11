@@ -1,6 +1,6 @@
 
 from title_gui import GuiManager
-from main_new import GameManager
+from main import GameManager
 
 if __name__ == '__main__':
     gui_manager = GuiManager()
