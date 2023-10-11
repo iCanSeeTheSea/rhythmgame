@@ -1,4 +1,20 @@
-# rhythm game thingy
+# Rhythm Game Thingy
+
+*Computer Games Technology Year 1 - Game 1*
+
+A simple rhythm game, press the space bar when the square is in the beats to score points!
+
+---
+
+## Installing and Running
+
+To install, head to our [Itch.io Page](https://itch.io/...) or download the ZIP from the releases page
+
+Once you've downloaded the ZIP, extract the files to an appropriate location, then run `rhythm_game.exe` to play!
+
+___
+
+## Game Plan
 
 - character moves across screen at a set speed
 - screen split up into 'beats' represented by coloured boxes
@@ -7,8 +23,6 @@
 - if the player misses the beat, the player changes direction but the score does not increment  > beat turns red
 - more score given based on how much of player is in the beat
 - if the player hits button before they are in the beat, beat turns red and no score given
-
-
 - when the button is pressed the character changes direction
 - when should press should sync with music
 

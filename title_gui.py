@@ -11,7 +11,8 @@ Mintlify Doc Writer used to help write function docstrings
 https://writer.mintlify.com/
 """
 
-UI_ROOT = Path("./UI")
+UI_PATH = Path("./UI")
+
 
 class GuiManager:
     def __init__(self, stats: tuple = None) -> None:
@@ -27,8 +28,8 @@ class GuiManager:
         self.__bg_colour = 0
         self.__background = [Box(self.__window, x=i * 90, colour_shift=(i * 5) + self.__bg_colour) for i in range(9)]
 
-        self.__press_start = Image(self.__window, UI_ROOT / 'press_space.png', 249, 10, 4)
-        self.__space_bar = Image(self.__window, UI_ROOT / 'space_bar_1.png', 249, 300, 9.8)
+        self.__press_start = Image(self.__window, UI_PATH / 'press_space.png', 249, 10, 4)
+        self.__space_bar = Image(self.__window, UI_PATH / 'space_bar_1.png', 249, 300, 9.8)
         self.__frame_counter = 0
         self.start_game = False
 
@@ -65,13 +66,13 @@ class GuiManager:
             self.__frame_counter = self.__frame_counter % 8
             match self.__frame_counter:
                 case 0:
-                    self.__space_bar._source = UI_ROOT / 'space_bar_1.png'
+                    self.__space_bar._source = UI_PATH / 'space_bar_1.png'
                 case 2:
-                    self.__space_bar._source = UI_ROOT / 'space_bar_2.png'
+                    self.__space_bar._source = UI_PATH / 'space_bar_2.png'
                 case 4:
-                    self.__space_bar._source = UI_ROOT / 'space_bar_3.png'
+                    self.__space_bar._source = UI_PATH / 'space_bar_3.png'
                 case 6:
-                    self.__space_bar._source = UI_ROOT / 'space_bar_2.png'
+                    self.__space_bar._source = UI_PATH / 'space_bar_2.png'
             self.__space_bar.draw()
 
             # Background animation
