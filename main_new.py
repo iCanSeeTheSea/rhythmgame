@@ -57,7 +57,6 @@ class GameManager:
             if not keys[pygame.K_SPACE]:
                 self.space_pressed = 0
 
-            print(self.space_pressed)
             match self.player_in_beat():
                 case 0:
                     if self.space_pressed == 1:
@@ -107,26 +106,27 @@ class GameManager:
         - 0: no score
         - 3: player overshoot
         """
-        player_range = self.player.get_range()
         direction = self.player.get_direction()
         # 2: perfect score, 1: partial score, 0: no score, 3: player overshoot
         if direction == "right":
-            if player_range[1] + self.speed >= self.__active_range[1] and player_range[1]-self.__active_range[1] <= 180:
+            player_range = [x + self.speed for x in self.player.get_range()]
+            if player_range[1] >= self.__active_range[1] and player_range[1]-self.__active_range[1] <= 180:
                 return 3
-            elif player_range[1] + self.speed >= self.__active_range[0]:
-                if player_range[0] + self.speed >= self.__active_range[0]:
+            elif player_range[0] <= self.__active_range[0] <= player_range[1]:
+                # if the player is close enough to hitting the beat perfectly, max score is given
+                if self.__active_range[1] - player_range[1] <= 30:
                     return 2
                 return 1
             return 0
         elif direction == "left":
-            if player_range[0] - self.speed <= self.__active_range[0] and self.__active_range[1]-player_range[1] <= 180:
+            player_range = [x - self.speed for x in self.player.get_range()]
+            if player_range[0] <= self.__active_range[0] and self.__active_range[1]-player_range[1] <= 180:
                 return 3
-            elif player_range[0] - self.speed <= self.__active_range[1]:
-                if player_range[1] - self.speed <= self.__active_range[1]:
+            elif player_range[0] <= self.__active_range[1] <= player_range[1]:
+                if player_range[0] - self.__active_range[0] <= 30:
                     return 2
                 return 1
             return 0
-
 
 class Rectangle:
     def __init__(self, window, x, y, height, width, colour) -> None:
@@ -186,7 +186,7 @@ class Player(Rectangle):
 
         :param window: The "window" parameter is the pygame surface on which the player is drawn.
         """
-        super().__init__(window, 425, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
+        super().__init__(window, 426, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
         self.__direction = "right"
         self.__direction_change = True
         self.score = Score(window)
