@@ -36,7 +36,7 @@ class GameManager:
         self.__active_range = self.__active_beat.set_active()
         self.__speed = 6
 
-    def game_loop(self) -> None:
+    def game_loop(self) -> tuple:
         """
         The `game_loop` function is responsible for running the main game loop, updating the game state, handling player
         input, and updating the display.
@@ -57,6 +57,7 @@ class GameManager:
                 self.__space_pressed = 0
 
             match self.player_in_beat():
+                # colour is set and score updated according to how well player matches space press with beat
                 case 0:
                     if self.__space_pressed == 1:
                         # `space_pressed` set to 2 to stop the press from registering for a different note as well
@@ -75,13 +76,16 @@ class GameManager:
                         self.__player.score.update_score("perfect")
                 case 3:
                     self.__active_beat.set_hit((252, 73, 73))
-                    self.__player.score.update_score("none")
+                    self.__player.score.update_score("next")
                     self.__player.change_direction()
                     self.__player.allow_direction_change()
                     self.__active_beat.set_inactive()
 
                     # selecting the next active note
-                    self.__active_beat = self.__beats[self.__song.get_next_note()]
+                    next_index = self.__song.get_next_note()
+                    if next_index == -1:
+                        break
+                    self.__active_beat = self.__beats[next_index]
                     self.__active_range = self.__active_beat.set_active()
                     self.__player.score.unlock_score_update()
 
@@ -93,6 +97,8 @@ class GameManager:
 
             # running at 60 fps
             self.__clock.tick(60)
+
+        return self.__player.score.get_stats()
 
     def player_in_beat(self) -> int:
         """
@@ -223,6 +229,8 @@ class Player(Rectangle):
 
     def get_direction(self) -> str:
         """
+        Getter for direction attribute
+
         :return: The direction of the object.
         """
         return self._direction
@@ -299,27 +307,50 @@ class Beat(Rectangle):
 
 
 class Score:
-    def __init__(self, window: pygame.Surface) -> None:
+    def __init__(self, window: pygame.Surface, size: int = 50, score: int = 0, beat_stats: dict = None) -> None:
         """
-        The function initializes the class instance with a window, font, score, and update flag.
+        The function initializes a class instance with a font, score, color, update flag, and a dictionary to track beat
+        statistics.
 
-        :param window: pygame surface where the score will be displayed
-        :type window: pygame Surface
+        :param window: `pygame.Surface` object where the score will be displayed
+        :type window: pygame.Surface
+        :param score: integer that represents the initial score of the player. It is set to 0 by default if no value is provided
+        :type score: int (optional)
+        :param beat_stats: dictionary that keeps track of how many beats the player has hit. It has three keys: `beats`, `good` and `perfect`
+        :type beat_stats: dict (optional)
         """
         self.__window = window
         # monospace is the best font dont @ me :3
-        self.__font = pygame.font.SysFont("monospace", 50)
-        self.__score = 0
+        self.__font = pygame.font.SysFont("monospace", size)
+        self.__score = score
         self.__allow_update = True
-        self.__beat_stats = {"beats": 0, "good": 0, "perfect": 0}
+        self.__colour = (0, 0, 0)
+        if beat_stats is None:
+            self.__beat_stats = {"beats": 0, "good": 0, "perfect": 0}
+        else:
+            self.__beat_stats = beat_stats
 
-    def __write_score(self) -> None:
+    def write_beat_stats(self, position: tuple) -> None:
+        """
+        The function displays beat statistics on a given window surface.
+
+        :param position: the x and y coordinates to display the score
+        :type position: tuple
+        """
+        hits = self.__beat_stats["good"] + self.__beat_stats["perfect"]
+        stats_surface = self.__font.render(f"Hits:{hits}/{self.__beat_stats['beats']} Good: {self.__beat_stats['good']} Perfect: {self.__beat_stats['perfect']}", True, self.__colour)
+        self.__window.blit(stats_surface, position)
+
+    def write_score(self, position: tuple = (0, 0)) -> None:
         """
         The function renders the score text and blits it onto the window.
+
+        :param position: the x and y coordinates to display the score
+        :type position: tuple
         """
         # score text has to be rendered every time it is updated
-        score_surface = self.__font.render(f"{self.__score}", True, (146, 99, 247))
-        self.__window.blit(score_surface, (0, 0))
+        score_surface = self.__font.render(f"Score: {self.__score}", True, self.__colour)
+        self.__window.blit(score_surface, position)
 
     def __increase_score(self, beat_success: str) -> None:
         """
@@ -335,8 +366,6 @@ class Score:
                     self.__score += 10
                 case "good":
                     self.__score += 5
-                case "none":
-                    pass
             self.__allow_update = False
 
     def unlock_score_update(self) -> None:
@@ -355,7 +384,7 @@ class Score:
         if beat_success:
             self.__increase_score(beat_success)
             self.__update_stats(beat_success)
-        self.__write_score()
+        self.write_score()
 
     def __update_stats(self, hit: str = "") -> None:
         """
@@ -364,9 +393,19 @@ class Score:
         :param hit: string that represents whether the hit was "good", "perfect" or not hit. Used to determine which dictionary parameters to update
         :type hit: str
         """
-        self.__beat_stats["beats"] += 1
         if hit and hit != "none":
-            self.__beat_stats[hit] += 1
+            if hit == 'next':
+                self.__beat_stats["beats"] += 1
+            else:
+                self.__beat_stats[hit] += 1
+
+    def get_stats(self) -> tuple:
+        """
+        The function "get_stats" returns a tuple containing the score and beat statistics.
+        :return: tuple containing the values of `self.__score` and
+        `self.__beat_stats`.
+        """
+        return self.__score, self.__beat_stats
 
 
 class Song:
@@ -429,4 +468,7 @@ class Song:
         :return: The next note in the sequence.
         """
         self.__current_note += 1
-        return self.__sequence[self.__current_note]
+        try:
+            return self.__sequence[self.__current_note]
+        except IndexError:
+            return -1

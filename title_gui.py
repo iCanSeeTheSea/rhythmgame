@@ -3,6 +3,8 @@ from sys import exit
 import math
 import pygame
 
+from main import Score
+
 """
 Mintlify Doc Writer used to help write function docstrings
 https://writer.mintlify.com/
@@ -10,7 +12,7 @@ https://writer.mintlify.com/
 
 
 class GuiManager:
-    def __init__(self) -> None:
+    def __init__(self, stats: tuple = None) -> None:
         """
         Initializes a Pygame window and sets up various game elements such as the
         background, start prompt, and space bar image.
@@ -28,6 +30,11 @@ class GuiManager:
         self.__frame_counter = 0
         self.start_game = False
 
+        self.__score = None
+        if stats is not None:
+            (score, beat_stats) = stats
+            self.__score = Score(self.__window, 30, score, beat_stats)
+
     def gui_loop(self) -> None:
         """
         The function `gui_loop` is a continuous loop that handles events, updates the GUI, and checks for the space bar key
@@ -39,11 +46,17 @@ class GuiManager:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
+
             self.__window.fill((255, 255, 255))
+
             for beat in range(9):
                 self.__background[beat].set_colour((beat * 5) + self.__bg_colour)
                 self.__background[beat].draw()
             self.__press_start.draw()
+
+            if self.__score is not None:
+                self.__score.write_score((320, 150))
+                self.__score.write_beat_stats((140, 200))
 
             self.__frame_counter += 1
             self.__frame_counter = self.__frame_counter % 8
