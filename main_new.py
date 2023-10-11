@@ -192,7 +192,7 @@ class Player(Rectangle):
         :param window: pygame surface on which the player is drawn.
         :type window: pygame Surface
         """
-        super().__init__(window, 426, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
+        super().__init__(window, 425, window.get_height() // 2 - 25, 90, 90, (146, 99, 247))
         self.__direction = "right"
         self.__direction_change = True
         self.score = Score(window)
@@ -366,8 +366,8 @@ class Score:
         :param hit: string that represents whether the hit was "good", "perfect" or not hit. Used to determine which dictionary parameters to update
         :type hit: str
         """
-        self.__beat_stats["beat"] += 1
-        if hit and self.__beat_stats[hit]:
+        self.__beat_stats["beats"] += 1
+        if hit and hit != "none":
             self.__beat_stats[hit] += 1
 
 
