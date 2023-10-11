@@ -8,6 +8,7 @@ Mintlify Doc Writer used to help write function docstrings
 https://writer.mintlify.com/
 """
 
+
 class GameManager:
     def __init__(self) -> None:
         """
@@ -18,6 +19,8 @@ class GameManager:
         self.window = pygame.display.set_mode((810, 500))
         pygame.display.set_caption('Rhythm Game')
         self.clock = pygame.time.Clock()
+
+        self.space_pressed = 0
 
         self.player = Player(self.window)
         self.song = Song('pulsar.wav', False)
@@ -47,27 +50,28 @@ class GameManager:
                 self.song.play()
                 self.song.playing = True
 
-            space_pressed = False
+            # holding space will only register as a press for the note it is first pressed for
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_SPACE] and not space_pressed:
-                space_pressed = True
-                # self.player.disallow_direction_change()
-            else:
-                # only allows direction to be changed after the space bar is depressed
-                # self.player.allow_direction_change()
-                space_pressed = False
+            if keys[pygame.K_SPACE] and not self.space_pressed:
+                self.space_pressed = 1
+            if not keys[pygame.K_SPACE]:
+                self.space_pressed = 0
 
+            print(self.space_pressed)
             match self.player_in_beat():
                 case 0:
-                    if space_pressed:
+                    if self.space_pressed == 1:
+                        self.space_pressed = 2
                         self.__active_beat.set_hit((252, 73, 73))
                         self.player.score.update_score("none")
                 case 1:
-                    if space_pressed:
+                    if self.space_pressed == 1:
+                        self.space_pressed = 2
                         self.__active_beat.set_hit((73, 252, 73))
                         self.player.score.update_score("good")
                 case 2:
-                    if space_pressed:
+                    if self.space_pressed == 1:
+                        self.space_pressed = 2
                         self.__active_beat.set_hit((73, 252, 252))
                         self.player.score.update_score("perfect")
                 case 3:
