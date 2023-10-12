@@ -1,4 +1,4 @@
-# Rhythm Game Thingy
+# Space Bass
 
 *Computer Games Technology Year 1 - Game 1*
 
@@ -8,9 +8,9 @@ A simple rhythm game, press the space bar when the square is in the beats to sco
 
 ## Installing and Running
 
-To install, head to our [Itch.io Page](https://itch.io/...) or download the ZIP from the releases page
+To install, head to our [Itch.io Page](https://icanseethesea.itch.io/space-bass) or download the ZIP from the releases page
 
-Once you've downloaded the ZIP, extract the files to an appropriate location, then run `rhythm_game.exe` to play!
+Once you've downloaded the ZIP, extract the files to an appropriate location, then run `Space_Bass.exe` to play!
 
 ___
 
